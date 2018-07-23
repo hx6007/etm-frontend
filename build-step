@@ -1,3 +1,20 @@
+Jenkins 插件安装
+	
+Publish Over SSH
+
+
+Jenkins 系统管理-系统设置
+
+Publish over SSH
+/root/.ssh/id_rsa
+SSH Servers	
+142-stg
+192.168.224.142
+/tmp
+
+
+Dockerfile
+
 # node底包
 FROM node:9.11.1 as builder
 # 定义容器中的工作路径
