@@ -91,7 +91,11 @@ function CartItem(props) {
           }
           }}/></Td>
         <Td colspan='2'><ItemContainer to={`/products/${props.id}`}><Image src={props.images[0] || Noimg}/><Detail>{props.title}<br />配送仓：{props.warehouse}<br />等级：{props.level_text}</Detail></ItemContainer></Td>
+        {props.username2 !== null && props.username2 !== undefined ?
+        <Tdp>{props.priceFace || 0}</Tdp>
+        :
         <Tdp>{props.userPrice || 0}</Tdp>
+        }
         <Td>
           <CountInput value="-" type="button" onChange={e => {}} onClick={e =>
             props.handleQuantityChange(props.index,parseInt(props.count)-1,props.cartId)} />
@@ -102,7 +106,11 @@ function CartItem(props) {
             props.handleQuantityChange(props.index,parseInt(props.count)+1,props.cartId)}/>
          </Td>
         {/*<Td>{props.warehouse}</Td>*/}
-        <Tdpa>{(parseFloat(props.userPrice)*parseFloat(props.count)).toFixed(2)}</Tdpa>
+        {
+          props.username2 !== null && props.username2 !== undefined ?
+            <Tdpa>{(parseFloat(props.priceFace)*parseFloat(props.count)).toFixed(2)}</Tdpa>:
+            <Tdpa>{(parseFloat(props.userPrice)*parseFloat(props.count)).toFixed(2)}</Tdpa>
+        }
         <Td><Linka href="javascript:;" onClick={e => {
           props.removeItem(props.index,props.cartId); //sku_id
         }}>删除</Linka><Linka href="javascript:;" onClick = {e => {props.addToCollect(props.id,props.index,props.cartId)}}>移入我的收藏</Linka></Td>

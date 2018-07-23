@@ -92,6 +92,7 @@ const ItemContainer = styled(Link)`
   text-decoration: none;
 `;
 function CollectItem(props) {
+  console.log("产品收藏",props);
   let priceName = '';
   switch (props.userLevel){
     case 0:
@@ -117,7 +118,10 @@ function CollectItem(props) {
       <ProudecP>产品编号:{props.product_no}</ProudecP>
       <ProudecP><Lei>规格:{props.spec}</Lei><Rii>等级:{props.level_text}</Rii></ProudecP>
       <Operate>
-        <Price>{priceName}￥{props.userPrice}/片</Price>
+        {props.username2 !== null && props.username2 ?
+          <Price><PriceT>商城价：</PriceT>￥{props.priceFace}/片</Price>:
+          <Price>{priceName}￥{props.userPrice}/片</Price>
+        }
       </Operate>
       <Operation className="aaa">
         <CollectOperate>

@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import 'url-search-params-polyfill';
 import ceshi from 'images/ceshi.jpg';
 import {getUserInfo} from "../../utils/service";
+import {makeSelectUserName2} from "../../containers/App/selectors";
 
 
 
@@ -98,7 +99,7 @@ export class PersonCard extends React.Component{
     return (
       <Div>
         <p><Tipspan>会员编号：</Tipspan><PerLabel>{item.customer_no}</PerLabel></p>
-        <p><Tipspan>用户名称：</Tipspan><PerLabel>{item.name}</PerLabel></p>
+        <p><Tipspan>用户名称：</Tipspan>{this.props.username2 !==null && this.props.username2 !==undefined ? <PerLabel>{item.name}-{this.props.username2}</PerLabel> : <PerLabel>{item.name}</PerLabel>}</p>
         <p><Tipspan>手机号码：</Tipspan><PerLabel>{item.mobile}</PerLabel></p>
         <p><Tipspan>所在地区：</Tipspan><PerLabel>{item.province}/{item.city}/{item.district}</PerLabel></p>
         <p><Tipspan>会员身份：</Tipspan><PerLabel>{item.customer_grade}</PerLabel></p>
@@ -121,6 +122,7 @@ PersonCard.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   user_id: makeSelectUserId(),
+  username2: makeSelectUserName2()
 });
 
 function mapDispatchToProps(dispatch) {

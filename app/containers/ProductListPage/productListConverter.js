@@ -7,6 +7,7 @@
  * @param productListData
  */
 export function parseProductList(productListData) {
+  console.log("productListData",productListData);
   let productList = [];
     for (const item of productListData) {
         // let level = item.cv6;
@@ -30,7 +31,8 @@ export function parseProductList(productListData) {
             image: item.codemap,
             title: title,
             unit:item.baseuom,
-            price: item.price || 0.0
+            price: item.price || 0.0,
+            Futures: item.Futures
         };
         productList.push(product);
     }

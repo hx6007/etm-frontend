@@ -28,6 +28,14 @@ const makeSelectToken = () => createSelector(
   selectGlobal,
   (globalState) => globalState.getIn(['currentUser','ticket'])
 );
+const makeSelectUserName2 = () => createSelector(
+  selectGlobal,
+  (globalState) => globalState.getIn(['currentUser','username2'])
+);
+const makeSelectLogSiteCode = () => createSelector(
+  selectGlobal,
+  (globalState) => globalState.getIn(['currentUser','logSiteCode'])
+);
 const makeSelectUserName = () => createSelector(
   selectGlobal,
   (globalState) => globalState.getIn(['currentUser','name'])
@@ -39,6 +47,10 @@ const makeSelectUserLevel = () => createSelector(
 const makeSelectUserType = () => createSelector(
   selectGlobal,
   (globalState) => globalState.getIn(['currentUser','type'])
+);
+const makeSelectCustomerGrade = () => createSelector(
+  selectGlobal,
+  (globalState) => globalState.getIn(['currentUser','customer_grade'])
 );
 const makeSelectUserIsValidate = () => createSelector(
   selectGlobal,
@@ -55,6 +67,10 @@ const makeSelectProductHalls = () => createSelector(
 const makeSelectWarehouse = () => createSelector(
   selectGlobal,
   (globalState) => globalState.get('warehouse')
+);
+const makeFutures = () => createSelector(
+  selectGlobal,
+  (globalState) => globalState.get('Futures')
 );
 
 const makeSelectLoading = () => createSelector(
@@ -78,11 +94,15 @@ export {
   makeSelectCategory,
   makeSelectNavbar,
   makeSelectCustomerNo,
+  makeFutures,
   makeSelectToken,
+  makeSelectUserName2,
   makeSelectUserName,
+  makeSelectLogSiteCode,
   makeSelectUserLevel,
   makeSelectUserType,
   makeSelectSiteCode,
+  makeSelectCustomerGrade,
   makeSelectProductHalls,
   makeSelectWarehouse,
   makeSelectCurrentUser,

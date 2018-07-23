@@ -32,7 +32,7 @@ import 'url-search-params-polyfill';
 import {getMatcode, getProductList} from "../../utils/service";
 import {
   makeSelectUserLevel, makeSelectProductHalls, makeSelectSiteCode, makeSelectUserIsValidate, makeSelectCategory,
-  makeSelectWarehouse, makeSelectUserType
+  makeSelectWarehouse, makeSelectUserType, makeSelectUserName2
 } from "../App/selectors";
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import {SITE_CODE} from "../../utils/serverUrl";
@@ -201,9 +201,10 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
       isLogin: param.userLevel,
       page: param.page,
       clttype: param.site_code,
+      username2: param.username2,
     }
     getMatcode(getParam).then(data => {
-      console.log("getMatcode",data)
+      console.log("getMatcode",getParam)
       this.setState({status: false})
       if (data.code !== 1)throw '服务器数据错误'+ JSON.stringify(data);
       let productList = parseProductList(data.data.result);
@@ -220,7 +221,7 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
 
     }).catch(e => {
       console.log(e);
-      alert('加载出错')
+      alert("加载失败，请重试或联系相关人员")
     })
   };
 
@@ -239,6 +240,7 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
 
   loadList(props=this.props){
     const search = props.location.search; // could be '?category=1&keyword=99'
+    const pathnames =  props.location.pathname;
     const params = new URLSearchParams(search);
     const allPrice = params.get("price");
     let arr = [];
@@ -265,6 +267,10 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
       site_code: props.type,
       product_hall_id:props.productHalls,
       is_validat:props.is_validate,//非会员0, 会员为1,白金为2, 不传值为面价
+      listOrClearList: pathnames === "/productList" ? 1 : 2,//1对为产品列表数据，2为读清仓产品列表数据
+      futureOrStock: params.get("Futures"),//期货还是现货，杨桃满屋特有
+      username2: props.username2,//子账号名称
+      cltlabel: params.get("cltlabel"),
     };
     if(getParam.search != null){
       this.getMatcode(getParam);
@@ -287,7 +293,7 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
 
       }).catch(e => {
         console.log(e);
-        alert('加载出错')
+        alert('加载失败，请重试或联系相关人员')
       })
     }
   }
@@ -330,7 +336,7 @@ export class ProductListPage extends React.PureComponent { // eslint-disable-lin
         <Filter filters={this.state.filterList} location={this.props.location} history={this.props.history}/>
         <ListContainer>{this.state.productList.length>0?
           this.state.productList.map((item,index) =>
-          <ProductItem userLevel={this.props.userLevel} key={"product"+item.sku_id+index} id={item.id} title={item.title} price={item.price} image={item.image} unit={item.unit} />
+          <ProductItem username2={this.props.username2} userLevel={this.props.userLevel} key={"product"+item.sku_id+index} id={item.id} title={item.title} price={item.price} image={item.image} unit={item.unit} Futures={item.Futures} />
           ): this.state.status ? <SpinDiv> <Spin/> </SpinDiv> : this.state.keyword != null ? "查找不到这个类似的相关的产品，请确认产品关键词" : "无数据" }</ListContainer>
         <LocaleProvider locale={zhCN}>
           <Div>
@@ -356,6 +362,7 @@ const mapStateToProps = createStructuredSelector({
   category: makeSelectCategory(),
   warehouse: makeSelectWarehouse(),
   type: makeSelectUserType(),
+  username2: makeSelectUserName2()
 });
 
 function mapDispatchToProps(dispatch) {

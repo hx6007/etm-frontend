@@ -13,7 +13,7 @@ import connect from "react-redux/es/connect/connect";
 import {
   makeSelectProductHalls,
   makeSelectSiteCode, makeSelectUserId, makeSelectUserIsValidate,
-  makeSelectUserLevel,makeSelectUserType
+  makeSelectUserLevel, makeSelectUserName2, makeSelectUserType
 } from "../../containers/App/selectors";
 import {createStructuredSelector} from 'reselect';
 import compose from "redux/es/compose";
@@ -154,7 +154,8 @@ export class Collect extends React.Component {
         "user_id" : user_id,
         "sku_id" : product.id,
         "warehouse" : product.warehouse,
-        "count" : count
+        "count" : count,
+        "username2": this.props.username2
       }
       addCart(params).then(data => {
         if(data.code !== 1) throw data;
@@ -169,6 +170,7 @@ export class Collect extends React.Component {
   render() {
     let collecList = this.state.collectList.map((item,index) =>
       <CollectItem key={item.collectId+"collect"+item.sku_id+index} index={index} {...item} userLevel = {this.props.userLevel}
+                   username2={this.props.username2}
                    removeCollect={(collectid) =>this.removeCollect(collectid) }
                    addCart = {(index,collectid) =>this.addCart(index,collectid) }
       ></CollectItem>
@@ -195,6 +197,7 @@ const mapStateToProps = createStructuredSelector({
   userLevel: makeSelectUserLevel(),
   product_hall_id: makeSelectProductHalls(),
   userType: makeSelectUserType(),
+  username2: makeSelectUserName2()
 });
 const withConnect = connect(mapStateToProps);
 

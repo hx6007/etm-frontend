@@ -13,6 +13,7 @@ import reduce from 'images/reduce.png';
 import noPic from 'images/no_pic.jpg';
 import collect from 'images/productDetail/collect.png';
 import Gallery from "../../components/Gallery";
+import {SITE_CODE} from "../../utils/serverUrl";
 
 const ContentBox=styled(HorizontalLayout)`
   margin-top: 15px;
@@ -155,9 +156,16 @@ const CollectDiv = styled.div`
     cursor: pointer;
   }
 `;
+const FuturesButton = styled.button`
+  border: solid #BE9478 1px;
+  margin-left: 10px;
+  border-radius: 3px;
+  color: #BE9478;
+  font-size: 13px;
+`;
 
-function getShownPrice(userLevel,product){
-  console.log("1111",userLevel,product)
+function getShownPrice(userLevel,product,username2){
+  if(username2 === null || username2 === undefined ){
     switch (userLevel){
       default:
       case 0:
@@ -188,20 +196,27 @@ function getShownPrice(userLevel,product){
             <span>白金价：<Span>￥{product.goldPrice}/{product.price_unit}</Span></span>
           </div>
         );
-    }
+      }
+  }else{
+    return (
+      <span>商城价：<Span>￥{product.priceFace}/{product.price_unit}</Span></span>
+    );
+  }
 }
 
 
-export const Content = ({product, userLevel, buyNow, addToCart, updateCount,addCollect}) => {
+export const Content = ({product, userLevel, buyNow, addToCart, updateCount,addCollect,username2}) => {
   const imgUrl = product.images&&product.images[0] || noPic;
   const distinguish = "productDetail";
+  //97ejk才显示期货现货筛选
+  let judgeFutures = SITE_CODE === "97ejk" && product.Futures !== undefined && product.Futures === "期货";
   return (
     <ContentBox>
       <Gallery images={product.images}  distinguish={distinguish}/>
       <ProductionInformation>
-        <Title>{product.title}</Title>
+        <Title>{product.title} {judgeFutures ? <FuturesButton>{product.Futures}</FuturesButton> : ""}</Title>
         <Price>
-          {getShownPrice(userLevel,product)}
+          {getShownPrice(userLevel,product,username2)}
         </Price>
         <Model>型号：<SmallPic src={imgUrl}/></Model>
         <Specification>规格：<SpecA>{product.spec}</SpecA></Specification>

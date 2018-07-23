@@ -1,87 +1,58 @@
-
+const md5Base64 = require('md5-base64');
 import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
-const md5Base64 = require('md5-base64');
 import icPhone from 'images/login/phone.png';
 import icPasd from 'images/login/pasd.png';
-import icEmail from 'images/login/email.png';
-import {login as loginRequest,getUserInfo as getUserInfoRequest} from 'utils/service.js';
+import {getUserInfo as getUserInfoRequest, login as loginRequest} from 'utils/service.js';
 import {SITE_CODE} from "../../utils/serverUrl.js"
-import {getYtmwb2bProducHall} from "../../utils/service";
-
 
 const LoginFormDiv = styled.div`
     display: flex;
     flex-flow: column wrap;
-  `;
-const FormTitle = styled.span`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    padding: 30px 30px;
   `;
 const LoginTitle = styled.span`
-    padding:5px 10px;
+    padding:5px 0 12px;
     font-size: 22px;
     font-weight: bold;
     color: ${changeColor(SITE_CODE).fontColor};
-    border-bottom: 3px solid ${changeColor(SITE_CODE).borderColor};
-    cursor: pointer;
-  `;
-const ResetTitle = styled(LoginTitle)`
-    display: none;
-  `;
-const LoginFormView = styled.div`
-    display: flex;
-    flex-flow: column wrap;
-    margin-top: 30px;
-    //display: none;
   `;
 const TextView = styled.div`
-    padding-bottom: 8px;
-    border-bottom: 1px solid #999;
+    display: flex;
+    flex-direction: row;
+    margin: 12px 0;
+    align-items: center;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #ddd;
   `;
 const InputTel = styled.input`
-    display: inline-flex;
     height: 30px;
-    margin:0 15px;
     font-size: 16px;
-    color: #666;
+    padding-left: 12px;
+    color: #333;
+    flex: 1;
     border: none;
     outline: none;
   `;
 const PhoneImg = styled.img`
-    width: 24px;
-    height: 30px;
+    width: 16px;
+    height: 20px;
     background: #e55062;
 `;
-const YtmwPhone = styled.span`
-    background: #e55062;
-`;
-const InputPassword = styled(InputTel)``;
 const PasdImg = styled(PhoneImg)``;
-const TelError = styled.span`
-    height: 25px;
-    padding-bottom: 8px;
+const Error = styled.span`
+    font-size: 12px;
+    margin-bottom: -8px;
     color: #e72b06;
   `;
-const PasswordError = styled(TelError)``;
-const ForgetView = styled.div`
-    display: flex;
-    justify-content: flex-end;
-  `;
-const ForgetPW = styled.a`
-    cursor: pointer;
-    color: #E793E2;
-  `;
 const LoginBtn = styled.button`
-    width: 280px;
-    height: 50px;
-    margin-top: 10px;
+    padding: 8px 0;
     border: none;
     outline: none;
-    font-size: 22px;
-    color: #fff;
+    font-size: 14px;
+    margin-top: 12px;
+    color: #f5f5f5;
     background: ${changeColor(SITE_CODE).backgroundColor};
     border-radius: 50px;
     cursor: pointer;
@@ -89,84 +60,28 @@ const LoginBtn = styled.button`
       background: ${changeColor(SITE_CODE).hoverColor};
     }
   `;
-const LoginBtnError = styled(TelError)``;
+const Loading=styled(LoginBtn)`
+  background:#ddd;
+   &:hover,&:focus,&:active{
+      background: #ddd
+    }
+`;
 const RegisterLink = styled(Link)`
-    width: 280px;
-    height: 50px;
-    line-height: 50px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    border: none;
+    padding: 8px 0;
+    margin-top: 8px;
+    font-size: 14px;
     outline: none;
     text-decoration: none;
     text-align: center;
-    font-size: 22px;
     border-radius: 50px;
     cursor: pointer;
     background: #fff;
     color: ${changeColor(SITE_CODE).backgroundColor};
     border: 1px solid ${changeColor(SITE_CODE).backgroundColor};
     &:hover,&:focus,&:active{
-      color: ${changeColor(SITE_CODE).hoverColor};
-      border: 1px solid ${changeColor(SITE_CODE).hoverColor};
-      background: none;
-    }
-  `;
-const ResetFormView =styled.div`
-    display: flex;
-    flex-flow: column wrap;
-    margin-top: 30px;
-    //display: none;
-  `;
-const ValidationView = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  `;
-const ValidationTextView = styled.div`
-    padding-bottom: 8px;
-    border-bottom: 1px solid #999;
-  `;
-const EmailImg = styled(PhoneImg)`
-    height: 20px;
-  `;
-const InputCode = styled.input`
-    display: inline-flex;
-    width: 130px;
-    height: 30px;
-    margin:0 15px;
-    font-size: 16px;
-    color: #666;
-    border: none;
-    outline: none;
-  `;
-const ValidationBtn = styled.button`
-    width: 110px;
-    height: 40px; 
-    font-size: 16px;
-    color: #fff;
-    background: #ee6e7e;
-    outline: none;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    &:hover,&:focus,&:active{
-      background: #e55062;
-    }
-  `;
-const ConfirmBtn = styled.button`
-    width: 280px;
-    height: 50px;
-    margin: 5px auto;
-    font-size: 22px;
-    color: #fff;
-    background: #ee6e7e;
-    outline: none;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    &:hover,&:focus,&:active{
-      background: #e55062;
+      color: white;
+      background:  ${changeColor(SITE_CODE).hoverColor};
+      border: 1px solid white;
     }
   `;
 
@@ -201,102 +116,41 @@ class LoginForm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      userError:"",
-      passwordError:"",
-      loginBtnError:"",
       username:"",
       password:"",
-      tabChange:1,
-      userTelPhone:"",
-      verificationCode:"",
-      newPassword:"",
-      comfirmPassword:"",
-      resetErrorTip:"",
-      ticket: ""
+      error:false,
+      loading:false,
     }
   }
-
-  //监听input中的数据，保存到state中
-  onInput(key,value){
-    this.setState({
-      [key]:value
-    })
-  }
-
   //点击登录按钮，触发后台接口提供的验证，对数据的处理等方法
-  handleClick(){
-    let usernameError=this.checkUsernameError(this.state.username);
-    let passwordError=this.checkPasswordError(this.state.password);
-    if(usernameError){
-      this.setState({
-        userError:usernameError
-      })
-      return;
+  handleClick=()=>{
+    const { username ,password  } =this.state;
+    if(!username) {
+      this.setState({ error:'请输入用户名' })
+    }else if(!password){
+      this.setState({ error:'请输入密码' })
     }else{
-      this.setState({
-        userError:''
-      })
+      this.setState({ error:false,loading:true});
+      this.login(username,md5Base64(password));
     }
-    if(passwordError){
-      this.setState({
-        passwordError:passwordError
-      })
-      return;
-    }else{
-      this.setState({
-        passwordError:''
-      })
-    }
-    this.login(this.state.username,this.state.password);
-  }
-
-  /**
-   * 检查用户名错误 返回错误信息
-   */
-  checkUsernameError(username){
-    let empty=(!username)||(!username.trim());
-    if(empty){
-      return '* 账号不能为空'
-    }
-  }
-
-  /**
-   * 检查密码错误 返回错误信息
-   */
-  checkPasswordError(password){
-    let empty=(!password)||(!password.trim());
-    if(empty){
-      return '* 密码不能为空'
-    }
-  }
+  };
 
   /**
    * 调用登录接口，进行网络请求
    */
   login(username,password){
-    password=md5Base64(password);
     loginRequest(username,password).then(data=>{
       if(data.code===1){
         const ticket=data.data.token;
         this.props.onReceiveTicket(ticket);
-        this.setState({ticket: ticket})
+        this.setState({ticket: ticket,username2: data.data.username2,logSiteCode: data.data.site_code,customer_grade: data.data.customer_grade})
         const userId = data.data.userid;
         this.getUserInfo(userId);
       }else {
         throw data.message;
       }
     }).catch(error=>{
-      this.onFailed(error);
-    })
-  }
-
-  /**
-   *登录失败的情况
-   */
-  onFailed(error){
-    console.log(error);
-    this.setState({
-      loginBtnError:error,
+      this.setState({error,loading:false});
     })
   }
 
@@ -307,7 +161,6 @@ class LoginForm extends React.Component{
     getUserInfoRequest(userId).then(data=>{
       console.log("获取用户信息",data);
       if(data.code===1){
-        if(data.code !== 1)throw '读取用户信息失败';
         let userInfo = data.data;
         let currentUser={
           id: userInfo.userid,//会员ID
@@ -317,6 +170,9 @@ class LoginForm extends React.Component{
           level: 0,//用户等级： 1 游客 2 注册会员 3 vip 4 白金
           is_validate: null, //非会员0, 会员为1,白金为2, 不传值为面价
           ticket: this.state.ticket,//登录后获取ticket
+          username2: this.state.username2,//子账号用户名
+          logSiteCode: this.state.logSiteCode,//登录后的site_code
+          customer_grade: this.state.customer_grade
         };
           switch (userInfo.customer_grade){
             case "白金客户":
@@ -350,101 +206,33 @@ class LoginForm extends React.Component{
         }
           this.props.onReceiveUserInfo(currentUser,siteCode,productHalls);
         }else {
-          throw data;
+          throw '获取用户信息失败';
         }
     }).catch(error=>{
-      this.onFailed(error);
+      this.setState({error,loading:false});
     })
   }
 
-  /**
-   * 确认找回密码部分:
-   */
-  comfirmHandleClick(){
-    let reg_telPhone = /^1[34578]\d{9}$/;
-    if(!reg_telPhone.test(this.state.telPhone)){
-      this.setState({
-        resetErrorTip:"* 请输入正确的手机号"
-      })
-    }else if(!this.state.verificationCode){
-      this.setState({
-        resetErrorTip:"* 请输入正确的验证码"
-      })
-    }else if(!this.state.newPassword){
-      this.setState({
-        resetErrorTip:"* 请输入新密码"
-      })
-    }else if(this.state.comfirmPassword != this.state.newPassword){
-      this.setState({
-        resetErrorTip:"* 请确认新密码"
-      })
-    }
-  }
-
-  componentDidMount(){ }
-  //获取账号登录表单的视图
-  getLoginFormView(){
-    const B2cSiteCode = ["kiki","maqiduo","like_peach","lola_ceramics"];
-    const showornot = B2cSiteCode.indexOf(SITE_CODE) === -1;
-      return   <LoginFormView>
-      <TextView>
-        {SITE_CODE == "51etm" ? <PhoneImg src={icPhone} alt="icPhone"/> : <YtmwPhone alt="icPhone"/> }
-        <InputTel type="text" placeholder="请输入账户名" defaultValue={this.state.username} onChange={(e)=>this.onInput('username',e.target.value)}></InputTel>
-      </TextView>
-      <TelError>{this.state.userError}</TelError>
-      <TextView>
-        {SITE_CODE == "51etm" ? <PasdImg src={icPasd} alt="icPasd"/> : <YtmwPhone alt="icPhone"/> }
-        <InputPassword type="password" placeholder="请输入密码" defaultValue={this.state.password} onChange={(e)=>this.onInput('password',e.target.value)}></InputPassword>
-      </TextView>
-      <PasswordError>{this.state.passwordError}</PasswordError>
-      <ForgetView>
-        {/*<ForgetPW onClick={(e) => this.setState({tabChange:2})}>忘记密码</ForgetPW>*/}
-      </ForgetView>
-      <LoginBtn onClick={this.handleClick.bind(this,this.state.username,this.state.password)}>登录</LoginBtn>
-      <LoginBtnError>{this.state.loginBtnError}</LoginBtnError>
-        {showornot ? <RegisterLink to='/apply'>注册</RegisterLink> :"" }
-    </LoginFormView>
-  }
-
-  //获取找回密码表单的视图
-  getResetFormView(){
-    return  <ResetFormView>
-      <TextView>
-        <PhoneImg src={icPhone} alt="icPhone"/>
-        <InputTel type="number" placeholder="请输入手机号码" value={this.state.userTelPhone} onChange={(e)=>this.onInput('userTelPhone',e.target.value)}></InputTel>
-      </TextView>
-      <TelError>{this.state.resetErrorTip}</TelError>
-      <ValidationView>
-        <ValidationTextView>
-          <EmailImg src={icEmail} alt="icEmail"/>
-          <InputCode type="text" placeholder="请输入验证码" value={this.state.verificationCode} onChange={(e)=>this.onInput('verificationCode',e.target.value)}></InputCode>
-        </ValidationTextView>
-        <ValidationBtn>获取验证码</ValidationBtn>
-      </ValidationView>
-      <TelError>{this.state.resetErrorTip}</TelError>
-      <TextView>
-        <PasdImg src={icPasd} alt="icPasd"/>
-        <InputPassword type="password" placeholder="请输入新密码" value={this.state.newPassword} onChange={(e)=>this.onInput('newPassword',e.target.value)}></InputPassword>
-      </TextView>
-      <TelError>{this.state.resetErrorTip}</TelError>
-      <TextView>
-        <PasdImg src={icPasd} alt="icPasd"/>
-        <InputPassword type="password" placeholder="请确认新密码" value={this.state.comfirmPassword} onChange={(e)=>this.onInput('comfirmPassword',e.target.value)}></InputPassword>
-      </TextView>
-      <TelError>{this.state.resetErrorTip}</TelError>
-      <TelError></TelError>
-      <ConfirmBtn onClick={(e)=>{this.comfirmHandleClick()}}>确定</ConfirmBtn>
-    </ResetFormView>
-  }
-
   render(){
+    const hideRegister = ["kiki","maqiduo","like_peach","lola_ceramics"].includes('SITE_CODE');
+    const {username,password,error,loading}=this.state;
     return(
       <LoginFormDiv>
-        <FormTitle>
-          <LoginTitle onClick={e => this.setState({tabChange:1})}>账号密码登录</LoginTitle>
-          <ResetTitle onClick={e => this.setState({tabChange:2})}>找回密码</ResetTitle>
-        </FormTitle>
-        {this.state.tabChange === 1 ? this.getLoginFormView() : this.getResetFormView()}
+          <LoginTitle>账号密码登录</LoginTitle>
+            <TextView>
+              {SITE_CODE === "51etm" && <PhoneImg src={icPhone} alt="icPhone"/>}
+              <InputTel type="text" placeholder="请输入账户名" defaultValue={username}
+                        onChange={(e) => this.setState({username: e.target.value})}/>
+            </TextView>
+            <TextView>
+              {SITE_CODE === "51etm" && <PasdImg src={icPasd} alt="icPasd"/> }
+              <InputTel type="password" placeholder="请输入密码" defaultValue={password}
+                        onChange={(e) => this.setState({password:e.target.value})}
+                        onKeyPress={e => e.key === 'Enter'&&this.handleClick()}/>
+            </TextView>
+            {error&& <Error>{error}</Error>}
+            {loading?<Loading>登录中...</Loading>:<LoginBtn onClick={this.handleClick}>登 录</LoginBtn>}
+            {!hideRegister && <RegisterLink to='/apply'>注 册</RegisterLink> }
       </LoginFormDiv>
     );
   }

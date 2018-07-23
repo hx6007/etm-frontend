@@ -16,6 +16,7 @@ import { makeSelectUserName, makeSelectUserId,makeSelectUserLevel,makeSelectToke
 import { signOutAction} from "../../containers/App/actions";
 import {logout} from "../../utils/service";
 import {SITE_CODE} from "../../utils/serverUrl.js"
+import {makeSelectUserName2} from "../../containers/App/selectors";
 
 
 
@@ -106,7 +107,9 @@ class MainTopBar extends React.PureComponent { // eslint-disable-line react/pref
 
   getLoginTag(username){
    return <div>
-     <BarLinkRed to='/user' target="_blank">{username}</BarLinkRed>
+     {this.props.username2 !==null && this.props.username2 ? <BarLinkRed to='/user' target="_blank">{username}-{this.props.username2}</BarLinkRed>
+     :<BarLinkRed to='/user' target="_blank">{username}</BarLinkRed>
+     }
      &nbsp;&nbsp;
      <Exit onClick={e=>{this.getLogout()}}>退出</Exit>
      &nbsp;&nbsp;&nbsp;&nbsp;
@@ -150,6 +153,7 @@ const mapStateToProps = createStructuredSelector({
   userId: makeSelectUserId(),
   userLevel: makeSelectUserLevel(),
   ticket: makeSelectToken(),
+  username2: makeSelectUserName2()
 });
 
 function mapDispatchToProps(dispatch) {

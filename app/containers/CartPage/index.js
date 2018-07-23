@@ -27,7 +27,7 @@ import {
 } from "../../utils/service";
 import {
   makeSelectUserId, makeSelectSiteCode, makeSelectUserIsValidate, makeSelectProductHalls,
-  makeSelectUserLevel,makeSelectUserType
+  makeSelectUserLevel, makeSelectUserType, makeSelectUserName2
 } from "../App/selectors";
 import {parseProduct} from "../ProductDetailPage/productConverter";
 import {signOutAction} from "../App/actions";
@@ -223,7 +223,7 @@ export class CartPage extends React.Component { // eslint-disable-line react/pre
     if (quantity<1){
       return;
     }
-    updateCart(cartid,quantity).then(data => {
+    updateCart(cartid,quantity,this.username2).then(data => {
       if (data.code === 1){
         let cartList=this.state.cartList;
         cartList[index].count=quantity;
@@ -285,8 +285,8 @@ export class CartPage extends React.Component { // eslint-disable-line react/pre
     this.setState({
       status:true
     });
-    const {user_id,siteCode,is_validate,product_hall_id} =this.props;
-    getCart(siteCode,user_id).then(data => {
+    const {user_id,siteCode,is_validate,product_hall_id,username2} =this.props;
+    getCart(siteCode,user_id,username2).then(data => {
       this.setState({cartList: []});
       if(data.code == 6){
         return;
@@ -393,6 +393,7 @@ export class CartPage extends React.Component { // eslint-disable-line react/pre
     const list = this.state.cartList.map((item,index) =>
       <CartItem index={index} key={item.id+''+index} {...item}
                 removeItem = {(idx,cartId)=>this.removeItem(idx,cartId)}
+                username2 = {this.props.username2}
                 checkItem={idx=>this.checkItem(idx)}
                 uncheckItem={idx=>this.uncheckItem(idx)}
                 handleQuantityChange={(idx,quantity,cartid)=>this.handleQuantityChange(idx,quantity,cartid)}
@@ -403,7 +404,11 @@ export class CartPage extends React.Component { // eslint-disable-line react/pre
     for (const item of this.state.cartList){
       if(item.checked){
         checkedCount++;
-        totalPrice+=parseInt(item.count)*parseFloat(item.userPrice);
+        if(this.props.username2 !== null && this.props.username2 !== undefined){
+          totalPrice+=parseInt(item.count)*parseFloat(item.priceFace);
+        }else {
+          totalPrice+=parseInt(item.count)*parseFloat(item.userPrice);
+        }
       }
     }
     totalPrice=totalPrice.toFixed(2);
@@ -472,6 +477,7 @@ const mapStateToProps = createStructuredSelector({
   userLevel: makeSelectUserLevel(),
   product_hall_id: makeSelectProductHalls(),
   userType: makeSelectUserType(),
+  username2: makeSelectUserName2()
 });
 
 function mapDispatchToProps(dispatch) {

@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {compose} from 'redux';
-import {Redirect} from 'react-router-dom';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -33,68 +32,41 @@ const Body = styled.div`
       justify-content: center;
    `;
 const Header = styled.div`
-      width: 80%;
-      margin: auto auto;
-      padding: 20px 0px;
+    position: fixed;
+    top:30px;
+    display: flex;
+    align-items: flex-end;
+    margin-left: 10%;
    `;
 const Logo = styled.img`
      width: 146px;
      height: 80px;
   `;
-const IndexLink = styled(Link)`
-      text-decoration: none;
-      font-size: 16px;
-      color: #bbb;
-      border:1px solid #bbb;
-      -webkit-border-radius:5px;
-      -moz-border-radius:5px;
-      border-radius:5px;
-      cursor: pointer;      
-      margin-left: 30px;
-      padding:10px 24px;
-      &:hover,&:focus,&:active{
-        color: #a59f9f;
-        border:1px solid #a59f9f;
-      }
-  `;
 const Section = styled.div`
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      height: 630px;
-      background: url(${loginBg}) no-repeat;
-      background-size: auto;
-      -webkit-background-size: auto;
-      -moz-background-size: auto;
-      -o-background-size: auto;
-      overflow: hidden;
-  `;
-const MainBox = styled.div`
-      display: flex;
-      justify-content: flex-end;
-      width: 80%;
-      height: 430px;
-      margin:40px auto 30px;
-      align-items: center;
+      background-image: url(${loginBg});
+      height: 90vh;
+      background-size:cover;
   `;
 const FormBox = styled.div`
-      flex-direction: row-reverse;
       width: 350px;
+      position: fixed;
+      transform:translateY(-70%);
+      top: 50%;
+      right: 20%;
+      border-radius: 5px;
       //height: 450px;
-      padding:20px 25px 40px;
       background: #ffffff;
       box-shadow:0 0 20px rgba(48,48,48,0.2);
-      z-index: 20;
   `;
 const Footer = styled.div`
       width: 100%;
-      height: 80px;
-      line-height: 80px;
+      height: 10vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;      
       font-size: 14px;
       font-weight: bold;
       color: #666666;
-      text-align: center;
-      margin-top: 30px;
   `;
 
 export class LoginPage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
@@ -111,18 +83,13 @@ export class LoginPage extends React.PureComponent { // eslint-disable-line reac
       <div>
         <HtmlTitle title={platform.name + " - 登录"}/>
         <Body>
-          <view>
             <Header>
-              <Logo src={platform.logo} alt={platform.name}></Logo>
-              {SITE_CODE !== "97ejk" && <IndexLink to='/'>返回首页</IndexLink>}
+              {SITE_CODE === "97ejk" ? <Logo src={platform.logo} alt={platform.name} /> : <Link to="/"><Logo src={platform.logo} alt={platform.name} /></Link> }
             </Header>
-          </view>
           <Section>
-            <MainBox>
               <FormBox>
                 <LoginForm onReceiveUserInfo={this.props.onReceiveUserInfo} onReceiveTicket={this.props.onReceiveTicket}/>
               </FormBox>
-            </MainBox>
           </Section>
           <Footer>
             COPYRIGHT © 2013-2017 {platform.company} 版权所有 {platform.recordation}

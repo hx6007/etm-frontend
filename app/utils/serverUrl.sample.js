@@ -2,14 +2,15 @@
 /**
  * 服务器根域名
  * @type {string}
- * site_code => 资源中心：rc,e特卖：etm_api,用户中心（java）：user_api,资源中心（java）:rc_api
  */
-export const RESOURCE_ROOT= 'https://api-stg.lolatc.com/api/gateway/rc?api_path=';
-export const ETM_ROOT = 'https://api-stg.lolatc.com/api/gateway/etm_api?api_path=';
-export const SITE_CODE = "51etm";
+const GATEWAY=process.env.GATEWAY||'https://java-getway-stg.heyiit.com';
+export const SITE_CODE = process.env.SITE_CODE||"97efx";
+export const RESOURCE_ROOT= GATEWAY+'/java-getway/apigateway/api.do?flagForAddress=rc&api_path=';
+export const ETM_ROOT = GATEWAY+'/java-getway/apigateway/api.do?flagForAddress=etm_api&api_path=';
 
 export function setUrl(site_code='',url='') {
-	const ori_url = 'https://api-stg.lolatc.com/api/gateway/'
-	const query = '?api_path=';
-  return ori_url + site_code + query + url ;
+  const ori_url = GATEWAY+'/java-getway/apigateway/api.do';
+  const query = '?api_path=';
+  return ori_url + query + url + '&flagForAddress='+ site_code;
 }
+

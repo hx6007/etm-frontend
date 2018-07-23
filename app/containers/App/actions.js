@@ -5,7 +5,7 @@
  */
 
 import {
-  SIGN_IN, SIGN_OUT,UPDATE_CATEGORY,UPDATE_NAVBAR,UPDATE_WAREHOUSE,UPDATE_TICKET,UPDATE_SPECIAL_SUPPLY
+  SIGN_IN, SIGN_OUT,UPDATE_CATEGORY,UPDATE_NAVBAR,UPDATE_WAREHOUSE,UPDATE_TICKET,UPDATE_SPECIAL_SUPPLY,UPDATE_FUTURES
 } from './constants';
 
 
@@ -17,6 +17,11 @@ export const updateWarehouse = (warehouse) => ({
 export const updateSpecialSupply = (special_supply) => ({
   type: UPDATE_SPECIAL_SUPPLY,
   special_supply
+});
+
+export const updateFutures = (Futures) => ({
+  type: UPDATE_FUTURES,
+  Futures
 });
 
 export const updateNavbarAction = (navbar) => ({

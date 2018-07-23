@@ -19,5 +19,18 @@
     <!-- The app hooks into this div -->
     <div id="app"></div>
     <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically includes all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this HTML file. Don't add any assets here! (Check out webpackconfig.js if you want to know more) -->
+    <script>
+      if (!!window.ActiveXObject || 'ActiveXObject' in window) {
+        // IE浏览器提示
+        var newDiv = document.createElement('h3');
+        var br = document.createElement('br');
+        var app=document.getElementById('app')
+        var newContent = document.createTextNode('　　您当前的兼容模式或IE浏览器不被支持，请切换到极速模式或谷歌浏览器进行浏览！');
+        newDiv.appendChild(br);
+        newDiv.appendChild(newContent);
+        document.body.removeChild(app);
+        document.body.appendChild(newDiv);
+      }
+    </script>
   </body>
 </html>

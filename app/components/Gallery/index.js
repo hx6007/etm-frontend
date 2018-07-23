@@ -14,9 +14,11 @@ const MyGallery = styled.div`
 
 const DiningGallery = styled(MyGallery)`
   width: 280px;
-  min-height: 280px;
+  min-height: 400px;
+  padding-bottom: 10px;
   .image-gallery-thumbnail{
     width: 55px;
+    padding: 0;
   }
   .image-gallery-left-nav{
     font-size: 40px;
@@ -26,16 +28,16 @@ const DiningGallery = styled(MyGallery)`
   }
   .image-gallery-thumbnails-wrapper{
     position: absolute;
-    bottom: 41px;
+    bottom: 55px;
     background: rgba(238,238,238,0.5);
     //opacity:0.7;
     width: 100%;
   }
   .image-gallery-slides{
-   height: 320px;
+   height: 400px;
   }
   .image-gallery-slide .image-gallery-description{
-    bottom: -40px;
+    bottom: -103px;
     background: #fff;
     color: #000;
   }
@@ -116,7 +118,7 @@ class Gallery extends React.Component{
         });
         return (
           <DiningGallery>
-            {images.length >0 &&<ImageGallery items={images} showPlayButton={false} showIndex={true} autoPlay={false} lazyLoad={true} showNav={false}
+            {images.length >0 &&<ImageGallery items={images} showPlayButton={false} autoPlay={false} lazyLoad={true} showNav={false}
               slideOnThumbnailHover={true} showFullscreenButton={false}
             />}
           </DiningGallery>

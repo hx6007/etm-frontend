@@ -11,11 +11,13 @@ import {Body} from "../../components/Layout";
 import {warehouses} from "../../utils/warehouse";
 import {FilterItem} from "./FilterItem";
 import 'url-search-params-polyfill';
+import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
 import {compose} from "redux";
 import {updateSpecialSupply, updateWarehouse} from "../App/actions";
 import {createStructuredSelector} from 'reselect';
 import {makeSelectCategory, makeSelectUserLevel, makeSelectWarehouse} from "../App/selectors";
+import {SITE_CODE} from "../../utils/serverUrl.js"
 
 
 const Input = styled.input`
@@ -31,6 +33,16 @@ const Button = styled.button`
   background: #FC461E;
   color: #fff;
 `;
+
+const ALink = styled(Link)`
+  color: #32335C;
+  &:hover{
+    color: #c52341;
+  }
+  padding: 0 0 5px 20px;
+`;
+
+
 
 
 class Filter extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -69,47 +81,7 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
           break;
         }
       }
-
     }
-
-    // switch (filterName){
-    //   case "规格":
-    //     return
-    // }
-    // let level;
-    //
-    // if(filterListTotal.special && filterName == "规格"){
-    //   list = filterListTotal.special.map((item,index) => {
-    //     const isChecked = checkedId == item;
-    //     return <FilterItem key={"special"+index} checked={isChecked}
-    //             onClick = {e => {
-    //               e.preventDefault();
-    //               this.updateUrlParam("special", isChecked ? null : item)
-    //             }}
-    //            >{item}</FilterItem>
-    //   });
-    // }else if(filterListTotal.cv6 && filterName == "等级"){
-    //   list = filterListTotal.cv6.map((item,index) => {
-    //     // level= this.changeLevelName(item);
-    //     const isChecked = checkedId == item;
-    //     return <FilterItem key={"cv6"+index} checked={isChecked}
-    //                        onClick = {e => {
-    //                          e.preventDefault();
-    //                          this.updateUrlParam("cv6", isChecked ? null : item)
-    //                        }}
-    //            >{item}</FilterItem>
-    //   });
-    // }else if(filterListTotal.material && filterName == "品牌"){
-    //   list = filterListTotal.material.map((item,index) => {
-    //     const isChecked = checkedId == item
-    //     return <FilterItem key={"material"+index} checked = {isChecked}
-    //              onClick = {e => {
-    //                e.preventDefault();
-    //                this.updateUrlParam("material", isChecked ? null : item)
-    //              }}
-    //            >{item}</FilterItem>
-    //   });
-    // }
     return list;
   }
 
@@ -129,6 +101,16 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
     }
   }
 
+  // choosrFourList(){
+  //   const fourList = this.props.location.state.fourList;
+  //   let fourName;
+  //   for (let fourPer of fourList){
+  //     fourName = fourPer.name;
+  //   }
+  //   return fourName;
+  // }
+
+
   render() {
     //console.log('Filter Render') todo 修改选中参数 会渲染筛选条件两次 此处有优化空间
     const search = this.props.location.search; // could be '?category=1&keyword=99'
@@ -142,8 +124,13 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
     const material = params.get('material');
     const cv6 = params.get('cv6');
     const special_supply = params.get('isfor');
+    const futureOrStock = params.get('Futures');
+    //找砖添加大公共筛选
+    const cltlabel = params.get('cltlabel');
     const warehouse = this.props.warehouse;
     const filters = this.props.filters;
+    const stateFour = this.props.location.state;
+
     // const materialList = this.getFilterList(filters, '材质', material_id);
     // const colorList = this.getFilterList(filters, '颜色', color_id);
     const specList = this.getFilterList(filters, '尺寸', special);
@@ -152,12 +139,18 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
     // const craftList = this.getFilterList(filters, '表面工艺', surface_craft_id);
     const brandList = this.getFilterList(filters, '品牌', material);
     const levelList = this.getFilterList(filters, '等级', cv6);
+    const cltlabelList = this.getFilterList(filters, '商品标签', cltlabel)
     const warehouseList = this.getWarehouseList(warehouse);
+    const fourThL = this.getFourList();
     const specialsupplyList =  this.getSpecialSupply(special_supply);
+    const futuresList = this.getFutures(futureOrStock)
     return (
       <Body>
       {/*{materialList.length > 0 && <FilterRow title='材质'>{materialList}</FilterRow>}*/}
       {/*{colorList.length > 0 && <FilterRow title='颜色'>{colorList}</FilterRow>}*/}
+      {/*{fourList.length > 0 && fourList.map(item => <ALink key={item.id} to={`/productList?category=${item.name}`}>{item.name}</ALink>) }*/}
+      {stateFour&& stateFour.fourList != undefined &&  stateFour.fourList.length > 0 && <FilterRow title='四级分类'>{fourThL}</FilterRow>}
+      {SITE_CODE === "ezz168" ? <FilterRow title="商品标签">{cltlabelList}</FilterRow> : ""}
       {specList.length > 0 && <FilterRow title='规格'>{specList}</FilterRow>}
       {/*{shapeList.length > 0 && <FilterRow title='形状'>{shapeList}</FilterRow>}*/}
       {/*{waterList.length > 0 && <FilterRow title='吸水率'>{waterList}</FilterRow>}*/}
@@ -165,8 +158,8 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
       {brandList.length > 0 && <FilterRow title='品牌'>{brandList}</FilterRow>}
       {levelList.length > 0 && <FilterRow title='等级'>{levelList}</FilterRow>}
       <FilterRow title='仓库'>{warehouseList}</FilterRow>
-      {this.props.userLevel != 0 ? <FilterRow title='是否专供'>{specialsupplyList}</FilterRow> : '' }
-
+      {this.props.userLevel != 0 && SITE_CODE !== "97ejk" && SITE_CODE !== "ezz168" && SITE_CODE !== "97efx"? <FilterRow title='是否专供'>{specialsupplyList}</FilterRow> : '' }
+      {SITE_CODE === "97ejk" ? <FilterRow title="期货或现货">{futuresList}</FilterRow> : "" }
       <FilterRow title='价格'>
         <Input type="number" min="0" placeholder="最低价" onChange={e => {
           this.setState({lowPrice: e.target.value})
@@ -219,6 +212,19 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
   }
 
   /**
+   * 获取产品四级分类
+   */
+  getFourList(){
+
+    const state = this.props.location.state;
+    if(state && state.fourList != undefined && state.fourList.length > 0 ){
+      return state.fourList.map((item) =>
+        <ALink to={`/productList?category=${item.name}`} key={item.id}>{item.name}</ALink>
+      );
+      }
+  }
+
+  /**
    *
    * 是否专供
    */
@@ -231,6 +237,20 @@ class Filter extends React.Component { // eslint-disable-line react/prefer-state
                   }>{items}</FilterItem>
     );
   }
+
+  /**
+   * 期货还是现货
+   */
+  getFutures(futureOrStock){
+    return ['期货','现货'].map((items) =>
+      <FilterItem key={items} checked={items === futureOrStock} type='radio'
+                  onClick={e => {
+                    this.updateUrlParam('Futures', items);
+                  }
+                  }>{items}</FilterItem>
+    );
+  }
+
 
 
   /**
@@ -256,7 +276,7 @@ Filter.propTypes = {};
 const mapStateToProps = createStructuredSelector({
   category: makeSelectCategory(),
   userLevel: makeSelectUserLevel(),
-  warehouse: makeSelectWarehouse(),
+  warehouse: makeSelectWarehouse()
 });
 
 function mapDispatchToProps(dispatch) {

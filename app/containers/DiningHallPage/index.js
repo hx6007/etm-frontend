@@ -122,7 +122,7 @@ export class DiningHallPage extends React.Component { // eslint-disable-line rea
       })
     }).catch(e => {
       console.log(e);
-      alert('加载出错')
+      alert('加载失败，请重试或联系相关人员')
     })
   }
 

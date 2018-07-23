@@ -36,6 +36,7 @@ function GetPlatform() {
         +"s.parentNode.insertBefore(hm, s);"
         +"})()";
   }
+
   const loginUrls = {
       "51exc": {
         "name":"e选材",
@@ -117,7 +118,7 @@ function GetPlatform() {
       },
       "97efx": {
         "name":"97efx",
-        "adindex": "9",
+        "adindex": "33",
         "title":" - 一家专门做瓷砖的网站",
         "server_tel":"13925485873",
         "connect_tel":"15015842740",
@@ -128,7 +129,7 @@ function GetPlatform() {
         "service_code": "",
         "regist_banner":rbannerEfx,
         "menu_code":"",
-        "baidutj":"",
+        "baidutj":baidutj('fbceda79d96a2ff6ab646ebfd1e813c1'),
         "address":"广东省佛山市禅城区华宝南路13号佛山国家火炬创新创业园D栋2-6楼"
       },
       "ezz168": {
@@ -144,7 +145,7 @@ function GetPlatform() {
         "service_code": "",
         "regist_banner":rbannerEzz,
         "menu_code":"",
-        "baidutj":"",
+        "baidutj":baidutj('2150879398d56f1de194be4a4967542b'),
         "address":"广东省佛山市禅城区华宝南路13号佛山国家火炬创新创业园D栋2-6楼"
       },
       "168ezc": {
@@ -179,7 +180,7 @@ function GetPlatform() {
       },
       "lola_ceramics": {
         "name":"楼兰陶瓷",
-        "adindex": "11",
+        "adindex": "28",
         "title":" - 一家专门做瓷砖的网站",
         "server_tel":"13925485873",
         "connect_tel":"15015842740",
@@ -194,7 +195,7 @@ function GetPlatform() {
       },
       "like_peach": {
         "name":"like_peach",
-        "adindex": "11",
+        "adindex": "34",
         "title":" - 一家专门做瓷砖的网站",
         "server_tel":"13925485873",
         "connect_tel":"15015842740",

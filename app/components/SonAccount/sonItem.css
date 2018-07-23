@@ -1,0 +1,36 @@
+.Tr{
+  width: 100%;
+  text-align: left;
+  border-bottom: solid 0.1px #ccc;
+  height: 50px;
+}
+
+.EditIcon{
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.DeleteIcon{
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+}
+
+.deleteTxt{
+  padding-left: 10px;
+  color: #0090F5;
+  cursor: pointer;
+}
+
+.editTxt{
+  color: #0090F5;
+  cursor: pointer;
+}
+
+.tdFirst{
+  padding-left: 10px;
+}
+
+

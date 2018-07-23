@@ -98,6 +98,8 @@ module.exports = (options) => ({
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        SITE_CODE: JSON.stringify(process.env.SITE_CODE),
+        GATEWAY: JSON.stringify(process.env.GATEWAY),
       },
     }),
     new webpack.NamedModulesPlugin(),

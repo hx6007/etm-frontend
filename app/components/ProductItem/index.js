@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import LazyLoad from 'react-lazyload';
 import {Link} from 'react-router-dom';
 import noPic from 'images/no_pic.jpg';
+import {SITE_CODE} from "../../utils/serverUrl";
 
 
 const ItemContainer = styled(Link)`
@@ -51,8 +52,16 @@ const Price = styled.span`
   `;
 const Spans=styled.span`
 `;
+const FuturesButton = styled.button`
+  border: solid #BE9478 1px;
+  margin-left: 10px;
+  border-radius: 3px;
+  color: #BE9478;
+  font-size: 13px;
+`;
 
 function ProductItem(props) {
+  let judgeFutures = SITE_CODE === "97ejk" && props.Futures !== undefined && props.Futures === "期货";
   return (
     <ItemContainer to={`/products/${props.id}`} target="_blank">
       <LazyLoad height={200}>
@@ -63,8 +72,8 @@ function ProductItem(props) {
 
         >
           <Meta
-            title= {props.userLevel == 0 ? <Spans>商城价：<Price>¥{props.price}/{props.unit}</Price></Spans> : <Spans>会员价：<Price>¥{props.price}/{props.unit}</Price></Spans>}
-            description= {<Title>{props.title}</Title>}
+            title= {props.userLevel == 0 || props.username2 !== null && props.username2 !== undefined ? <Spans>商城价：<Price>¥{props.price}/{props.unit}</Price></Spans> : <Spans>会员价：<Price>¥{props.price}/{props.unit}</Price></Spans>}
+            description= {<Title>{props.title} {judgeFutures ? <FuturesButton>{props.Futures}</FuturesButton> : ""}</Title>}
           />
         </Card>
       </LazyLoad>

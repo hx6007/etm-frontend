@@ -15,9 +15,8 @@ import {Body} from "../../components/Layout";
 import styled from 'styled-components';
 import CartItem from "../../components/CartItem";
 import {
-  makeSelectCustomerNo, makeSelectSiteCode, makeSelectUserId, makeSelectUserName,
-  makeSelectWarehouse
-} from "../App/selectors";
+  makeSelectCustomerNo, makeSelectSiteCode, makeSelectUserId, makeSelectUserName, makeSelectUserName2,
+  makeSelectWarehouse} from "../App/selectors";
 import {createStructuredSelector} from "reselect";
 import Noimg from './Noimg.jpg';
 import {Link} from "react-router-dom";
@@ -25,6 +24,7 @@ import {createOrder, delCart, getUserAddressList, getUserInfo} from "../../utils
 import moment from 'moment';
 import {Spin,DatePicker } from 'antd'
 import {signOutAction} from "../App/actions";
+import {SITE_CODE} from "../../utils/serverUrl";
 
 
 const { MonthPicker, RangePicker } = DatePicker;
@@ -197,6 +197,8 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
       checkeId: null,  //选择的地址Id
       modalVisible: false, //是否展示模态框
       noClick: 0,//点击订单按钮后是否禁用
+      platform_nameType:['门店客户','装修公司','施工队','设计师'],
+      indexCustomerType:((SITE_CODE === "51exc")?1:0),
     };
     // console.log(props.UserName,this.state.user_name);
     const { match,history,location,user_id}=props;
@@ -268,6 +270,7 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
         special:item.spec,
         goods_code:item.product_no,
         special_supply:item.is_special_supply,
+        Inventory: item.Inventory,//是否清仓
       });
     }
     const {user_id,siteCode,customer_no,UserName,history}=this.props;
@@ -286,12 +289,16 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
       "memo" : memo,
       "logistics" : logistics,
       "pick_date" : pick_date,
-      "order_goods" : order_goods
+      "order_goods" : order_goods,
+      "username2": this.props.username2,
+      "platform_name": this.state.platform_nameType[this.state.indexCustomerType],
     }
-    // console.log(JSON.stringify(order_params))
+    console.log("order_params",order_params)
+    // console.log("order_params",JSON.stringify(order_params))
     const noCli = this.state.noClick+1;
     this.setState({noClick: noCli})
     if(noCli>1) {alert("您已提交订单请耐心等待")}else{
+      console.log("order_params",order_params);
       createOrder(order_params).then(data => {
         if (data.code !== 1){
           console.log(data);
@@ -368,6 +375,12 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
     // Can not select days before today and today
     return current && current.valueOf() < Date.now();
   }
+  truePallet(){
+    this.setState({payJoy: true})
+  }
+  falsePallet(){
+    this.setState({payJoy: false})
+  }
 
   render() {
 
@@ -377,14 +390,23 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
           <Image src={item.images&&item.images[0] || Noimg}/>
           <Title>{item.title}</Title>
           </IndentThMsg>
-          <IndentTd>{parseFloat(item.userPrice).toFixed(2)}</IndentTd>
+          {this.props.username2 !== null && this.props.username2 !== undefined ?
+            <IndentTd>{parseFloat(item.priceFace).toFixed(2)}</IndentTd>:
+            <IndentTd>{parseFloat(item.userPrice).toFixed(2)}</IndentTd>
+          }
           <IndentTd>{parseInt(item.count)}</IndentTd>
+        {this.props.username2 !== null && this.props.username2 !== undefined ?
+          <IndentTd>{ (parseFloat(item.priceFace) * parseInt(item.count)).toFixed(2)}</IndentTd>:
           <IndentTd>{ (parseFloat(item.userPrice) * parseInt(item.count)).toFixed(2)}</IndentTd>
+        }
       </Tr>
     );
     let price= 0;
     for(const item of this.state.productList){
-      price+=parseFloat(item.userPrice) * parseInt(item.count)
+      {this.props.username2 !== null && this.props.username2 !== undefined ?
+        price+=parseFloat(item.priceFace) * parseInt(item.count):
+        price+=parseFloat(item.userPrice) * parseInt(item.count)
+      }
     }
     price=price.toFixed(2);
 
@@ -432,8 +454,8 @@ export class OrderSubmitPage extends React.PureComponent { // eslint-disable-lin
           </IndentList>
           <IndentList>
             <OtherTitle>是否打托：</OtherTitle>
-            <Label><input type="radio" name="datuo" onChange={e=>{this.setState({payJoy:true})}} defaultChecked />&nbsp;需要</Label>&nbsp;&nbsp;&nbsp;&nbsp;
-            <Label><input type="radio" name="datuo" onChange={e=>{this.setState({payJoy:false})}}/>&nbsp;不需要</Label>
+            <Label><input type="radio" name="datuo" onClick={e=>{this.truePallet()}} defaultChecked />&nbsp;需要</Label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <Label><input type="radio" name="datuo" onClick={e=>{this.falsePallet()}}/>&nbsp;不需要</Label>
           </IndentList>
           <IndentList>
             <OtherTitle>是否延迟发货：</OtherTitle>
@@ -478,7 +500,8 @@ const mapStateToProps = createStructuredSelector({
   siteCode: makeSelectSiteCode(),
   customer_no:makeSelectCustomerNo(),
   warehouse:makeSelectWarehouse(),
-  UserName:makeSelectUserName()
+  UserName:makeSelectUserName(),
+  username2: makeSelectUserName2()
 });
 
 

@@ -21,6 +21,7 @@ import {
   UPDATE_TICKET,
   UPDATE_CATEGORY,
   UPDATE_NAVBAR, UPDATE_WAREHOUSE,
+  UPDATE_FUTURES
 } from './constants';
 
 // The initial state of the App
@@ -35,6 +36,9 @@ const initialState = fromJS({
     level: 0,//用户等级： 1 游客 2 注册会员 3 vip 4 白金
     is_validate: null,//非会员0, 会员为1,白金为2, 不传值为面价
     ticket: null,//客户登录后的token
+    username2: null,//子账号用户名
+    logSiteCode: null,//登录后的site_code
+    customer_grade: null//客户类型
   },
   ticket:null,//访问权限
   siteCode: SITE_CODE,//所属平台ID
@@ -66,6 +70,9 @@ function appReducer(state = initialState, action) {
     case UPDATE_WAREHOUSE:
       return state
         .set('warehouse',action.warehouse);
+    case UPDATE_FUTURES:
+      return state
+        .set('Futures',action.Futures);
     case SIGN_IN:
       return state
         .setIn(['currentUser','id'],action.userInfo.id)
@@ -75,6 +82,9 @@ function appReducer(state = initialState, action) {
         .setIn(['currentUser','type'],action.userInfo.type)
         .setIn(['currentUser','is_validate'],action.userInfo.is_validate)
         .setIn(['currentUser','ticket'],action.userInfo.ticket)
+        .setIn(['currentUser','username2'],action.userInfo.username2)
+        .setIn(['currentUser','logSiteCode'],action.userInfo.logSiteCode)
+        .setIn(['currentUser','customer_grade'],action.userInfo.customer_grade)
         .set('siteCode',action.siteCode)
         .set('productHalls',action.productHalls);
     case SIGN_OUT:
@@ -86,6 +96,9 @@ function appReducer(state = initialState, action) {
         .setIn(['currentUser','level'],0)
         .setIn(['currentUser','is_validate'],null)
         .setIn(['currentUser','ticket'],null)
+        .setIn(['currentUser','username2'],null)
+        .setIn(['currentUser','logSiteCode'],null)
+        .setIn(['currentUser','customer_grade'],null)
         .set('siteCode',SITE_CODE)
         .set('productHalls',SITE_CODE == "51etm" ? "20,40" : null)
         .set('ticket',null);

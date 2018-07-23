@@ -296,8 +296,8 @@ class Menus extends React.PureComponent { // eslint-disable-line react/prefer-st
     })
   }
 
-  loadCategory(site_code){
-    getCategory(site_code).then(data=>{
+  loadCategory(){
+    getCategory().then(data=>{
       if (data.code !== 1) throw '获取分类数据出错';
       this.props.dispatch(updateCategoryAction(data.data));
 
@@ -338,10 +338,16 @@ class Menus extends React.PureComponent { // eslint-disable-line react/prefer-st
   }
 
   get3rdList(subCategory) {
+
     return subCategory.map(item => {
-      return <Menu3rd to={`/productList?category=${item.name}`} key={item.name} onClick={e => {
+      const location={
+        pathname:'/productList',
+        search:`?category=${item.name}`,
+        state: {fourList: item.children||[]}
+      }
+      return <Menu3rd to={location} key={item.name} onClick={e => {
         this.changeMenuVisibility(false);
-      }}>{item.name}</Menu3rd>
+      }} >{item.name}</Menu3rd>
     });
   }
 
@@ -368,7 +374,7 @@ class Menus extends React.PureComponent { // eslint-disable-line react/prefer-st
         <TabContainer>
          {SITE_CODE !== "97ejk" && <TabItem to='/'>首页</TabItem>}
          {
-           SITE_CODE !== "97ejk" ? <Home onMouseEnter={e => this.changeMenuVisibility(true)}
+           (SITE_CODE === "97ejk" || SITE_CODE === "like_peach") ? "" : <Home onMouseEnter={e => this.changeMenuVisibility(true)}
                                          onMouseLeave={e => this.changeMenuVisibility(false)}>
              产品馆&nbsp;&nbsp;
              <Small>▼</Small>
@@ -382,7 +388,7 @@ class Menus extends React.PureComponent { // eslint-disable-line react/prefer-st
                  </MenuRight>
                </HiddenPanel>
              )}
-           </Home> : ""
+           </Home>
          }
 
           {navbarList}

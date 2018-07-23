@@ -239,6 +239,10 @@ const SpanName = styled.span`
   white-space: nowrap;
   display: block;
 `;
+const SomeDetail = styled.p`
+  padding-bottom: 20px;
+  width: 920px;
+`;
 
 
 
@@ -248,7 +252,8 @@ export class DiningHallDetailPage extends React.Component { // eslint-disable-li
     this.state = {
       detail: {},
       choiceList: [],
-      relatedList: []
+      relatedList: [],
+      imageList: []
     };
     this.getDocCode(props)
   }
@@ -257,21 +262,28 @@ export class DiningHallDetailPage extends React.Component { // eslint-disable-li
     const docCode = props.match.params.DocCode;
     getDiningHallDetail(docCode).then(data => {
       if(data.code !== 1) throw '服务器错误';
-      this.setState({detail: data.data});
+      const imageList = [];
+      for(let items of data.data.list){
+        imageList.push(items.list)
+      }
+
+      this.setState({detail: data.data,imageList: imageList});
       getRelated(data.data.TCtype2, docCode).then(data => {
         if(data.code !== 1) throw '服务器错误';
         this.setState({relatedList: data.data})
       })
     }).catch(e => {
       console.log(e);
-      alert("加载出错")
+      alert("加载失败，请重试或联系相关人员")
     })
+
+
     forChoice(docCode).then(data => {
       if(data.code !== 1) throw '服务器错误';
       this.setState({choiceList: data.data})
     }).catch(e => {
       console.log(e);
-      alert("加载出错")
+      alert("加载失败，请重试或联系相关人员")
     });
   }
 
@@ -281,8 +293,8 @@ export class DiningHallDetailPage extends React.Component { // eslint-disable-li
     let images = [];
     let relatedList = [];
     const PromiseImg = [{img:quality, title: "正品保证"}, {img: aftersale, title: "无忧售后"}, {img: plugup, title: "破损补发"}]
-    if(this.state.detail.list !== undefined && this.state.detail.list !== null){
-      images = this.state.detail.list
+    if(this.state.imageList !== undefined && this.state.imageList !== null){
+      images = this.state.imageList
     }
     if(this.state.relatedList !== undefined && this.state.relatedList !== null){
       relatedList = this.state.relatedList;
@@ -316,9 +328,9 @@ export class DiningHallDetailPage extends React.Component { // eslint-disable-li
                 <DetailBottom>
                   <DiningSpan>套餐详情</DiningSpan>
                   <Hr/>
-                  <div>
-                    {this.state.detail.TCintroduce}
-                  </div>
+                  <SomeDetail>
+                    <pre>{this.state.detail.TCintroduce}</pre>
+                  </SomeDetail>
                 </DetailBottom>
                 <div>
                   <CanBuy>
@@ -335,7 +347,7 @@ export class DiningHallDetailPage extends React.Component { // eslint-disable-li
                   {this.state.choiceList.map((item, index) =>
                     <CanBuyDi key={index} to={`/products/${item.sku_id}`} target="_blank">
                       <CanBuyImg src={item.CodeMap||noPic} alt=""/>
-                      <SpanName>{item.MatName}+&nbsp;</SpanName>
+                      <SpanName>{item.MatName}</SpanName>
                     </CanBuyDi>
                   )}
                 </CanBuy>

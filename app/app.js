@@ -1,4 +1,4 @@
-/**
+ /**
  * app.js
  *
  * This is the entry file for the application, only setup and boilerplate
@@ -39,6 +39,10 @@ import { persistStore } from 'redux-persist-immutable'
 // Import CSS reset and Global Styles
 import './global-styles';
 
+import { LocaleProvider } from 'antd';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
+import 'moment/locale/zh-cn';
+
 // Create redux store with history
 const initialState = {};
 const history = createHistory();
@@ -51,9 +55,11 @@ const render = (messages) => {
     ReactDOM.render(
       <Provider store={store}>
         <LanguageProvider messages={messages}>
-          <ConnectedRouter history={history}>
-            <App />
-          </ConnectedRouter>
+          <LocaleProvider locale={zhCN}>
+            <ConnectedRouter history={history}>
+              <App />
+            </ConnectedRouter>
+          </LocaleProvider>
         </LanguageProvider>
       </Provider>,
       MOUNT_NODE
@@ -94,3 +100,5 @@ if (!window.Intl) {
 if (process.env.NODE_ENV === 'production') {
   require('offline-plugin/runtime').install(); // eslint-disable-line global-require
 }
+
+

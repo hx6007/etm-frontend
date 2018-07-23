@@ -27,15 +27,18 @@ import ProductDetailPage from 'containers/ProductDetailPage/Loadable';
 import AddressListPage from 'containers/AddressListPage/Loadable';
 import OrderSubmitPage from 'containers/OrderSubmitPage/Loadable';
 import AddressEditPage from 'containers/AddressEditPage';
+import GoLogin from '../../components/GoLogin/index';
 
 
 export default function App() {
   return (
     <div>
+      <GoLogin />
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/topic/:topicId" component={HomePage} />
         <Route path="/productList" component={ProductListPage} />
+        <Route path="/clearProductList" component={ProductListPage} />
         <Route path="/products/:productId" component={ProductDetailPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/apply" component={ApplyPage} />

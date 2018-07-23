@@ -50,10 +50,12 @@ const Thead = styled.thead`
 
 const Tr = styled.tr`
   height: 50px;
+  border: solid 1px #cccccc
 `;
 
 const Table = styled.table`
   width: 100%;
+  border: solid 1px #cccccc;
 `;
 
 const Tbody = styled.tbody`

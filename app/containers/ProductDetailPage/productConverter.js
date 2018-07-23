@@ -16,7 +16,7 @@ export function parseProduct(productData, id, warehouse = '佛山仓' , userLeve
   const styleList = filterStyleList(productData);
   const direction = parseDirection(item.guide);
   const questions = parseQuestion(item.problem);
-
+  const MatGroup1 = getNotNullString(item.MatGroup1);
   const warehouseData = filterWarehouseData(item.price, warehouse);
   let level = warehouseData.level||item.cv6||"";
   // const title = getNotNullString(item.brand) + getNotNullString(item.product_category_name) +
@@ -28,6 +28,7 @@ export function parseProduct(productData, id, warehouse = '佛山仓' , userLeve
   const priceVip = warehouseData.priceVip;
   const price_unit = getNotNullString(item.Baseuom);
   const price = warehouseData.price;
+  const Futures = getNotNullString(item.Futures);
   // const color = getNotNullString(item.colour);
   // const brand = getNotNullString(item.material);
   // const Texture = getNotNullString(item.Texture);
@@ -69,6 +70,9 @@ export function parseProduct(productData, id, warehouse = '佛山仓' , userLeve
     price_unit: item.Baseuom,
     base_unit: item.Baseuom,
     is_special_supply:item.IsFor,
+    MatGroup1: MatGroup1,
+    Futures: item.Futures,//期货还是现货只在e进口显示
+    Inventory: item.Inventory,//是否清仓
   };
 
 }

@@ -21,7 +21,7 @@ import MainHead from "../../components/MainHead";
 import {Content} from "./Content";
 import {parseProduct} from "./productConverter";
 import {makeSelectUserLevel,makeSelectWarehouse,makeSelectSiteCode,makeSelectUserIsValidate,makeSelectUserId} from "containers/App/selectors";
-import {addCart, addProductFavorite, getProductDetail} from "../../utils/service";
+import {addCart, addProductFavorite, getProductDetail, login} from "../../utils/service";
 import {Body, HorizontalLayout, VerticalLayout} from "../../components/Layout";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
@@ -29,7 +29,7 @@ import next from 'images/next.png';
 import GetPlatform from "../../components/GetPlatform";
 import {signOutAction} from "../App/actions";
 import {SITE_CODE} from "../../utils/serverUrl";
-import {makeSelectUserType} from "../App/selectors";
+import {makeSelectUserName2, makeSelectUserType} from "../App/selectors";
 
 const ImageList = styled(VerticalLayout)`
   margin-top: 50px;
@@ -103,6 +103,7 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
       // is_validate: 0,
     };
     this.loadData(props);
+    this.getUserLevels(props);
   }
   loadData(props=this.props){
     const sku_id = props.match.params.productId;
@@ -111,10 +112,10 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
     let getParams = {
       siteCode: userType,
       sku_id: sku_id,
-      userLevel: userLevel,
+      userLevel: userLevel
     }
     getProductDetail(getParams).then(data => {
-      console.log("getProductDetail",data)
+      console.log("getProductDetail",data);
       if (data.code !== 1)throw '服务器数据错误';
       const product=parseProduct(data.data,sku_id,warehouse,userLevel);
       this.setState({
@@ -122,7 +123,7 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
       })
     }).catch(e => {
       console.log(e);
-      alert('加载出错')
+      alert('加载失败，请重试或联系相关人员')
     })
   }
   render() {
@@ -137,11 +138,11 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
           <ProHead>
             <A to="/">首页</A>
             <NextImage src={next}/>
-            <A to={`/productList?category=${product.product_category_id}`}>{product.product_category_name}</A>
+            <A to={`/productList?category=${product.MatGroup1}`}>{product.MatGroup1}</A>
             <NextImage src={next}/>
             <A to="#">{product.title}</A>
           </ProHead>
-          <Content product={product} userLevel={this.props.userLevel} buyNow={this.buyNow} addToCart={this.addToCart} updateCount={this.updateCount} addCollect={this.addCollect}/>
+          <Content username2 ={this.props.username2} product={product} userLevel={this.props.userLevel} buyNow={this.buyNow} addToCart={this.addToCart} updateCount={this.updateCount} addCollect={this.addCollect}/>
           <ImageList>
             <ProductIntroduce>
               <ProductIntroduceSpan checked={this.state.checkTab===1} onClick={e => this.setState({checkTab: 1}) }>商品详情</ProductIntroduceSpan>
@@ -201,14 +202,42 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
     }
   };
 
-  //立即购买
+
+  getUserLevels(props){
+    const product = this.state.product;
+    //商城价
+    const priceFace = product.priceFace;
+    //会员价
+    const price = product.price;
+    //vip价
+    const priceVip = product.priceVip;
+    //白金价
+    const goldPrice = product.goldPrice;
+    switch (props.userLevel){
+      default:
+      case 0:
+        return priceFace;
+      case 1:
+        return price;
+      case 2:
+        return priceVip;
+      case 3:
+        return goldPrice;
+    }
+
+  }
+
+
+//立即购买
   buyNow=()=>{
+    const currentPrice = this.getUserLevels(this.props)
     const product=this.state.product;
-    const {userLevel,history}=this.props;
+    const {userLevel,history,username2}=this.props;
+    let priceOrVip = (SITE_CODE === "ezz168" || SITE_CODE === "97efx") && username2 ===null || username2 ===undefined;
     if(userLevel===0){
       history.push('/login');
       alert('请先登录');
-    }else if(product.userPrice<=0){
+    }else if(priceOrVip ? product.userPrice<=0: currentPrice<=0){
       alert('该商品没有价格，无法购买，请联系客服');
     }else {
       history.push('/orderSubmit',{productList:[{...product}]})
@@ -221,11 +250,13 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
    */
   addToCart=()=>{
     const product=this.state.product;
-    const {siteCode, user_id,history} = this.props;
+    const {siteCode, user_id, history, username2} = this.props;
+    const currentPrice = this.getUserLevels(this.props)
+    let priceOrVip = (SITE_CODE === "ezz168" || SITE_CODE === "97efx") && username2 ===null || username2 ===undefined;
     if(!user_id){
       history.push('/login');
       alert('请先登录');
-    }else if(product.userPrice<=0){
+    }else if( priceOrVip ? product.userPrice<=0: currentPrice<=0){
       alert('该商品没有价格，无法购买，请联系客服');
     }else {
       let params = {
@@ -233,7 +264,8 @@ export class ProductDetailPage extends React.Component { // eslint-disable-line 
         "user_id" : user_id,
         "sku_id" : product.id,
         "warehouse" : product.warehouse,
-        "count" : product.count
+        "count" : product.count,
+        "username2": this.props.username2
       }
       addCart(params).then(data => {
         if(data.code!==1){
@@ -281,7 +313,8 @@ const mapStateToProps = createStructuredSelector({
   siteCode: makeSelectSiteCode(),
   is_validate: makeSelectUserIsValidate(),
   user_id: makeSelectUserId(),
-  userType: makeSelectUserType()
+  userType: makeSelectUserType(),
+  username2: makeSelectUserName2()
 });
 
 function mapDispatchToProps(dispatch) {

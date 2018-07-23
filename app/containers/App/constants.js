@@ -18,4 +18,5 @@ export const UPDATE_TICKET = 'boilerplate/App/UPDATE_TICKET';
 export const UPDATE_NAVBAR = 'boilerplate/App/UPDATE_NAVBAR';
 export const UPDATE_WAREHOUSE = 'boilerplate/App/UPDATE_WAREHOUSE';
 export const UPDATE_SPECIAL_SUPPLY = 'boilerplate/App/UPDATE_SPECIAL_SUPPLY';
+export const UPDATE_FUTURES = 'boilerplate/App/UPDATE_FUTURES';
 export const DEFAULT_LOCALE = 'en';

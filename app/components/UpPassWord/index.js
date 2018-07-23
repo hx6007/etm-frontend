@@ -11,8 +11,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import makeSelectUserPage from "../../containers/UserPage/selectors";
-import {makeSelectCustomerNo, makeSelectUserId} from "../../containers/App/selectors";
-import {getUserInfo, updatePassword} from "../../utils/service";
+import {
+  makeSelectCustomerNo, makeSelectLogSiteCode, makeSelectUserId,
+  makeSelectUserName2
+} from "../../containers/App/selectors";
+import {getUserInfo, updatePassword, updateSonPassword} from "../../utils/service";
 const md5Base64 = require('md5-base64');
 import { signOutAction} from "../../containers/App/actions";
 
@@ -64,18 +67,35 @@ export class UpPassWord extends React.PureComponent {
       return
     }
     newPw = md5Base64(newPw)
-    updatePassword(oldpassword,newPw).then(data => {
-      if (data.code !== 1)throw '旧密码错误';
-        this.setState({
-          oldPw:'',
-          newPwC:'',
-          newPw:''
-        });
+    console.log("ssss",this.props.username2);
+    if(this.props.username2 === null){
+      updatePassword(oldpassword,newPw).then(data => {
+        if (data.code !== 1)throw '旧密码错误';
+          this.setState({
+            oldPw:'',
+            newPwC:'',
+            newPw:''
+          });
+          alert("修改密码成功！");
+        const {history,dispatch}=this.props;
+        dispatch(signOutAction());
+        history.replace('/login')
+      }).catch(error => {alert(error)});
+    }else{
+      updateSonPassword(this.props.username2, oldpassword, newPw).then(data => {
+        console.log("子账号",data);
+        if(data.code !==1) throw '旧密码错误';
+          this.setState({
+            oldPw:'',
+            newPwC:'',
+            newPw:''
+          });
         alert("修改密码成功！");
-      const {history,dispatch}=this.props;
-      dispatch(signOutAction());
-      history.replace('/login')
-    }).catch(error => {alert(error)});
+        const {history,dispatch}=this.props;
+        dispatch(signOutAction());
+        history.replace('/login')
+      }).catch(error => {alert(error)})
+    }
 
   }
   render() {
@@ -108,7 +128,9 @@ UpPassWord.propTypes = {
 const mapStateToProps = createStructuredSelector({
   userpage: makeSelectUserPage(),
   user_id:makeSelectUserId(),
-  customer_no: makeSelectCustomerNo()
+  customer_no: makeSelectCustomerNo(),
+  username2: makeSelectUserName2(),
+  logSiteCode: makeSelectLogSiteCode()
 });
 function mapDispatchToProps(dispatch) {
   return {

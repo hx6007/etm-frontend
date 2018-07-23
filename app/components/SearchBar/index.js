@@ -115,6 +115,7 @@ class SearchBar extends React.Component{
     this.state = {
       keyword:"",
       empty:false,
+      check: ""
     }
   }
 
@@ -123,7 +124,8 @@ class SearchBar extends React.Component{
    */
   onInput(key,value){
     this.setState({
-      [key]:value
+      [key]:value,
+      check: value
     })
   }
 
@@ -134,7 +136,7 @@ class SearchBar extends React.Component{
     const w = window.open('about:blank');
     w.location.href = `/productList?search=${search}`;
     // this.props.history.replace(`/productList?keyword=${keyword}`);
-    if(this.state.keyword){this.setState({keyword:""})}
+    if(this.state.check){this.setState({keyword:""})}
   }
 
   /**
@@ -142,7 +144,7 @@ class SearchBar extends React.Component{
    */
   getSubmit(e){
     e.preventDefault();
-    const keyword=this.state.keyword.trim();
+    const keyword=this.state.check.trim();
     this.goSearch(keyword);
   }
 
@@ -165,11 +167,11 @@ class SearchBar extends React.Component{
   render(){
     const search = this.props.location.search; // could be '?category=1&keyword=99'
     const params = new URLSearchParams(search);
-    const searchBar = params.get("search")? params.get("search") : "请输入关键字";
+    const searchBar = params.get("search");
     return (
       <div>
         <Form onSubmit = {e => this.getSubmit(e)} error={this.state.empty}>
-          <Input type="text"  placeholder={searchBar} onChange={(e)=>this.onInput('keyword',e.target.value)} />
+          <Input type="text"  placeholder="请输入关键字" defaultValue={searchBar} onChange={(e)=>this.onInput('keyword',e.target.value)} />
           <SearchButton onClick = {e => {this.getSubmit(e)}}/>
         </Form>
         <div>
