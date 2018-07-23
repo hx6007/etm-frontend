@@ -1,0 +1,77 @@
+# node底包
+FROM node:9.11.1 as builder
+# 定义容器中的工作路径
+WORKDIR /app
+# 安装依赖
+COPY package.json yarn.lock ./
+RUN npm config set registry 'https://registry.npm.taobao.org' \
+    && npm install --pure-lockfile
+# 拷贝所有文件
+COPY . .
+COPY app/utils/serverUrl.sample.js ./app/utils/serverUrl.js
+#定义环境变量 平台代号
+ARG SITE_CODE
+ARG GATEWAY
+# 构建打包
+RUN npm run build
+
+FROM nginx:stable
+COPY --from=builder /app/.nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html
+
+
+
+docker inside
+IMAGE_NAME="51etm"
+REGISTRY="192.168.224.142:5000"
+ 
+echo "=====build $IMAGE_NAME====="
+docker image build  -t $REGISTRY/$IMAGE_NAME:test --build-arg SITE_CODE=$IMAGE_NAME --build-arg GATEWAY=https://java-getway.51etm.com  .
+docker push $REGISTRY/$IMAGE_NAME:test
+echo "=====checker the registry====="
+curl -X GET $REGISTRY/v2/_catalog
+
+curl -X GET $REGISTRY/v2/$IMAGE_NAME/tags/list
+
+echo "=====finish====="
+
+
+
+
+docker outside
+PROJECT_PATH="/tmp/${BUILD_ID}"
+GIT_URL="ssh://git@gitlab.fslola.cn:8011/it/etm-frontend.git"
+IMAGE_NAME="97efx"
+REGISTRY="192.168.16.191:5000"
+mkdir $PROJECT_PATH
+echo "=====下载项目到$PROJECT_PATH====="
+git clone -v --depth 1 -b staging $GIT_URL $PROJECT_PATH
+cd $PROJECT_PATH
+echo "=====构建镜像$IMAGE_NAME====="
+docker image build  -t $REGISTRY/$IMAGE_NAME:$BUILD_ID --build-arg SITE_CODE=$IMAGE_NAME  .
+docker push $REGISTRY/$IMAGE_NAME:$BUILD_ID
+echo "=====查看镜像推送状态====="
+curl -X GET $REGISTRY/v2/_catalog
+
+curl -X GET $REGISTRY/v2/$IMAGE_NAME/tags/list
+
+cd ..
+rm -rf $PROJECT_PATH
+echo "=====推送完成====="
+
+
+正式
+
+IMAGE_NAME="reg.fslola.cn:8083/51etm:production"
+CONTAINER_NAME="51etm"
+#内部端口号
+INNER_PORT=80
+#外部端口号
+OUTER_PORT=8010
+docker pull $IMAGE_NAME
+if docker ps -a | grep -i $CONTAINER_NAME;then
+docker container rm -f $CONTAINER_NAME
+fi
+docker run -d -p $OUTER_PORT:$INNER_PORT --restart=always --name=$CONTAINER_NAME $IMAGE_NAME
+
+echo "=====OK====="
